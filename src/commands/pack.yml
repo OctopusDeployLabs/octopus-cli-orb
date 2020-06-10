@@ -1,0 +1,95 @@
+description: Creates a package (.nupkg or .zip) from files on disk, without needing a .nuspec or .csproj.
+parameters:
+  id:
+    type: string
+    description: The ID of the package; e.g. MyCompany.MyApp
+  format:
+    type: string
+    description: "Package format. Options are: NuPkg, Zip."
+    default: "Zip"
+  version:
+    type: string
+    description: "[Optional] The version of the package; must be a valid SemVer; defaults to a timestamp-based version."
+    default: ""
+  out_folder:
+    type: string
+    description: "[Optional] The folder into which the generated package file will be written; defaults to '.'"
+    default: "."
+  base_path:
+    type: string
+    description: "[Optional] The root folder containing files and folders to pack; defaults to '.'"
+    default: "."
+  verbose:
+    type: boolean
+    description: "[Optional] verbose output."
+    default: false
+  log_level:
+    type: string
+    description: "[Optional] The log level. Valid options are verbose, debug, information, warning, error and fatal. Defaults to 'debug'."
+    default: "debug"
+  author:
+    type: string
+    description: "[Optional] Add an author to the NuGet package metadata; defaults to the current user."
+    default: ""
+  title:
+    type: string
+    description: "[Optional] The title of the NuGet package."
+    default: ""
+  description:
+    type: string
+    description: "[Optional] A description of the NuGet package; defaults to a generic description."
+    default: ""
+  release_notes:
+    type: string
+    description: "[Optional] Release notes for this version of the NuGet package."
+    default: ""
+  release_notes_file:
+    type: string
+    description: "[Optional] A file containing release notes for this version of the package."
+    default: ""
+  compression_level:
+    type: string
+    description: "[Optional] Set compression level of package: none, fast, optimal (default)."
+    default: ""
+  include:
+    type: string
+    description: |
+      [Optional] Add a file pattern to include, relative to the base path e.g. /bin/*.dll - if none are specified, defaults to **
+    default: ""
+  overwrite:
+    type: boolean
+    description: Allow an existing package file of the same ID/version to be overwritten.
+    default: false
+steps:
+  - run:
+      name: "Package << parameters.id >>"
+      command: |
+        get_string_value() {
+          if test "$2"; then
+            PARAMS+=("--$1=$2")
+          fi
+        }
+
+        get_switch_value() {
+          if test $2 = "true"; then
+            PARAMS+=("--$1")
+          fi
+        }
+
+        get_string_value id "<< parameters.id >>"
+        get_string_value format "<< parameters.format >>"
+        get_string_value version "<< parameters.version >>"
+        get_string_value outFolder "<< parameters.out_folder >>"
+        get_string_value basePath "<< parameters.base_path >>"
+        get_switch_value verbose "<< parameters.verbose >>"
+        get_string_value logLevel "<< parameters.log_level >>"
+        get_string_value author "<< parameters.author >>"
+        get_string_value title "<< parameters.title >>"
+        get_string_value description "<< parameters.description >>"
+        get_string_value releaseNotes "<< parameters.release_notes >>"
+        get_string_value releaseNotesFile "<< parameters.release_notes_file >>"
+        get_string_value compressionlevel "<< parameters.compression_level >>"
+        get_string_value include "<< parameters.include >>"
+        get_switch_value overwrite "<< parameters.overwrite >>"
+
+        octo pack "${PARAMS[@]}"

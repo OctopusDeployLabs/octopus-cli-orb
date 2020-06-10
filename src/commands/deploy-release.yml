@@ -1,0 +1,259 @@
+description: Deploys a release.
+parameters:
+  project:
+    description: |
+      Name or ID of the project.
+    type: string
+  release_number:
+    description: |
+      Version number of the release to deploy. Or specify latest for the latest release.
+    type: string
+    default: ""
+  channel:
+    description: |
+      [Optional] Name or ID of the channel to use when getting the release to deploy.
+    type: string
+    default: ""
+  progress:
+    description: |
+      [Optional] Show progress of the deployment.
+    type: boolean
+    default: false
+  force_package_download:
+    description: |
+      [Optional] Whether to force downloading of already installed packages (flag, default false).
+    type: boolean
+    default: false
+  wait_for_deployment:
+    description: |
+      [Optional] Whether to wait synchronously for deployment to finish.
+    type: boolean
+    default: false
+  deployment_timeout:
+    description: |
+      [Optional] Specifies maximum time (timespan format) that the console session will wait for
+      the deployment to finish(default 00:10:00). This will not stop the deployment. Requires --
+      waitfordeployment parameter set.
+    type: string
+    default: ""
+  cancel_on_timeout:
+    description: |
+      [Optional] Whether to cancel the deployment if the deployment timeout is reached (flag, default false).
+    type: boolean
+    default: false
+  deployment_check_sleep_cycle:
+    description: |
+      [Optional] Specifies how much time (timespan format) should elapse between deployment status checks (default 00:00:10)
+    type: string
+    default: ""
+  guided_failure:
+    description: |
+      [Optional] Whether to use Guided Failure mode. (True or False. If not specified, will use default setting from environment)
+    type: string
+    default: ""
+  specific_machines:
+    description: |
+      [Optional] A comma-separated list of machine names to target in the deployed environment.
+      If not specified all machines in the environment will be considered.
+    type: string
+    default: ""
+  exclude_machines:
+    description: |
+      [Optional] A comma-separated list of machine names to exclude in the deployed environment. If
+      not specified all machines in the environment will be considered.
+    type: string
+    default: ""
+  force:
+    description: |
+      [Optional] If a project is configured to skip packages with already-installed versions, override this setting to force re-deployment (flag, default false).
+    type: boolean
+    default: false
+  skip:
+    description: |
+      [Optional] Skip a step by name.
+    type: string
+    default: ""
+  no_raw_log:
+    description: |
+      [Optional] Don't print the raw log of failed tasks.
+    type: boolean
+    default: false
+  raw_log_file:
+    description: |
+      [Optional] Redirect the raw log of failed tasks to a file.
+    type: string
+    default: ""
+  variable:
+    description: |
+      [Optional] Values for any prompted variables in the format Label:Value. For JSON values,
+      embedded quotation marks should be escaped with a backslash.
+    type: string
+    default: ""
+  deploy_at:
+    description: |
+      [Optional] Time at which deployment should start (scheduled deployment), specified as any valid
+      DateTimeOffset format, and assuming the time zone is the current local time zone.
+    type: string
+    default: ""
+  no_deploy_after:
+    description: |
+      [Optional] Time at which scheduled deployment should expire, specified as any valid
+      DateTimeOffset format, and assuming the time zone is the current local time zone.
+    type: string
+    default: ""
+  tenant:
+    description: |
+      Create a deployment for the tenant with this name or ID; specify this argument multiple times
+      to add multiple tenants or use `*` wildcard to deploy to all tenants who are ready for this
+      release (according to lifecycle).
+    type: string
+    default: ""
+  tenant_tag:
+    description: |
+      Create a deployment for tenants matching this tag; specify this argument multiple times to
+      build a query/filter with multiple tags, just like you can in the user interface.
+    type: string
+    default: ""
+  deploy_to:
+    description: |
+      [Optional] Name or ID of the environment to automatically deploy to, e.g., 'Production' or
+      'Environments-1'; specify this argument multiple times to deploy to multiple environments.
+    type: string
+    default: ""
+  update_variables:
+    description: |
+      Overwrite the variable snapshot for the release by re-importing the variables from the project.
+    type: boolean
+    default: false
+  space:
+    type: string
+    description: "[Optional] The name or ID of a space within which this command will be executed. The default space will be used if it is omitted."
+    default: ""
+  server:
+    type: env_var_name
+    description: |
+      [Optional] The name of the environment variable storing the base URL for your Octopus Server, e.g., 'https://octopus.example.com/'. This URL
+      can also be set in the OCTOPUS_CLI_SERVER environment variable.
+    default: "NOT_PROVIDED"
+  api_key:
+    type: env_var_name
+    description: |
+      [Optional] The name of the environment variable storing your API key. Get this from the user profile page.
+      You must provide an apiKey or username and password. If the guest account is enabled, a key of API-GUEST
+      can be used. This key can also be set in the OCTOPUS_CLI_API_KEY environment variable.
+    default: "NOT_PROVIDED"
+  user:
+    type: env_var_name
+    description: |
+      [Optional] The name of the environment variable storing the username to use when authenticating with the server. You must provide an apiKey or
+      username and password. This Username can also be set in the OCTOPUS_CLI_USERNAME environment
+      variable.
+    default: "NOT_PROVIDED"
+  pass:
+    type: env_var_name
+    description: |
+      [Optional] The name of the environment variable storing the password to use when authenticating with the server. This Password can also be set
+      in the OCTOPUS_CLI_PASSWORD environment variable.
+    default: "NOT_PROVIDED"
+  config_file:
+    type: string
+    description: "[Optional] Text file of default values, with one 'key = value' per line."
+    default: ""
+  debug:
+    type: boolean
+    description: "[Optional] Enable debug logging."
+    default: false
+  ignore_ssl_errors:
+    type: boolean
+    description: |
+      [Optional] Set this flag if your Octopus Server uses HTTPS but the certificate is not trusted on
+      this machine. Any certificate errors will be ignored. WARNING: this option may create a
+      security vulnerability.
+    default: false
+  timeout:
+    description: "[Optional] Timeout in seconds for network operations. Default is 600."
+    type: string
+    default: ""
+  proxy:
+    type: string
+    description: "[Optional] The URL of the proxy to use, e.g., 'https://proxy.example.com'."
+    default: ""
+  proxy_user:
+    description: "[Optional] The name of the environment variable storing the username for the proxy."
+    type: env_var_name
+    default: "NOT_PROVIDED"
+  proxy_pass:
+    description: |
+      [Optional] The name of the environment variable storing the password for the proxy. If both the username and password are omitted and
+      proxyAddress is specified, the default credentials are used.
+    type: env_var_name
+    default: "NOT_PROVIDED"
+  log_level:
+    description: |
+      [Optional] The log level. Valid options are verbose, debug, information, warning, error and fatal. Defaults to 'debug'.
+    type: string
+    default: ""
+steps:
+  - run:
+      name: "Deploy release for << parameters.project >> to << parameters.deploy_to >>"
+      command: |
+        get_string_value() {
+          if test "$2"; then
+            PARAMS+=("--$1=$2")
+          fi
+        }
+
+        get_switch_value() {
+          if test $2 = "true"; then
+            PARAMS+=("--$1")
+          fi
+        }
+
+        get_env_value() {
+          if test "$2" != "NOT_PROVIDED"; then
+            PARAMS+=("--$1=${!2}")
+          fi
+        }
+
+        get_string_value project "<< parameters.project >>"
+        get_string_value releaseNumber "<< parameters.release_number >>"
+        get_string_value channel "<< parameters.channel >>"
+        get_switch_value progress "<< parameters.progress >>"
+        get_switch_value forcepackagedownload "<< parameters.force_package_download >>"
+        get_switch_value waitfordeployment "<< parameters.wait_for_deployment >>"
+        get_string_value deploymenttimeout "<< parameters.deployment_timeout >>"
+        get_switch_value cancelontimeout "<< parameters.cancel_on_timeout >>"
+        get_string_value deploymentchecksleepcycle "<< parameters.deployment_check_sleep_cycle >>"
+        get_string_value guidedfailure "<< parameters.guided_failure >>"
+        get_string_value specificmachines "<< parameters.specific_machines >>"
+        get_string_value exclude_machines "<< parameters.exclude_machines >>"
+        get_switch_value force "<< parameters.force >>"
+        get_string_value skip "<< parameters.skip >>"
+        get_switch_value norawlog "<< parameters.no_raw_log >>"
+        get_string_value rawlogfile "<< parameters.raw_log_file >>"
+        get_string_value variable "<< parameters.variable >>"
+        get_string_value deployat "<< parameters.deploy_at >>"
+        get_string_value nodeployafter "<< parameters.no_deploy_after >>"
+        get_string_value tenant "<< parameters.tenant >>"
+        get_string_value tenanttag "<< parameters.tenant_tag >>"
+        get_string_value deployto "<< parameters.deploy_to >>"
+        get_switch_value updateVariables "<< parameters.update_variables >>"
+        get_env_value server "<< parameters.server >>"
+        get_env_value apiKey "<< parameters.api_key >>"
+        get_env_value user "<< parameters.user >>"
+        get_env_value pass "<< parameters.pass >>"
+        get_string_value configFile "<< parameters.config_file >>"
+        get_string_value timeout "<< parameters.timeout >>"
+        get_string_value proxy "<< parameters.proxy >>"
+        get_env_value proxyUser "<< parameters.proxy_user >>"
+        get_env_value proxyPass "<< parameters.proxy_pass >>"
+        get_string_value logLevel "<< parameters.log_level >>"
+        get_switch_value ignoreSslErrors "<< parameters.ignore_ssl_errors >>"S
+        get_switch_value debug "<< parameters.debug >>"
+        get_string_value space "<< parameters.space >>"
+
+        echo octo deploy-release "${PARAMS[@]}"
+
+        set -x
+
+        octo deploy-release "${PARAMS[@]}"

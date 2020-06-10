@@ -1,0 +1,16 @@
+description: Push a package to Octopus.
+usage:
+  version: 2.1
+  orbs:
+    octo-exp: octopus-samples/octo-exp@0.0.3
+  jobs:
+    build:
+      executor:
+        name: octo-exp/default
+      steps:
+        - octo-exp/install-tools
+        - checkout
+        - octo-exp/push:
+            package: "package/OctopusSamples.OctoPetShop.Database.1.2.3.zip"
+            server: "OCTOPUS_SERVER_URL"
+            api_key: "OCTOPUS_API_KEY"

@@ -1,0 +1,17 @@
+description: Create an Octopus package.
+usage:
+  version: 2.1
+  orbs:
+    octo-exp: octopus-samples/octo-exp@0.0.3
+  jobs:
+    build:
+      executor:
+        name: octo-exp/default
+      steps:
+        - octo-exp/install-tools
+        - checkout
+        - octo-exp/pack:
+            id: "OctopusSamples.OctoPetShop.Database"
+            version: "1.2.3"
+            base_path: "publish/OctopusSamples.OctoPetShop.Database"
+            out_folder: "package"

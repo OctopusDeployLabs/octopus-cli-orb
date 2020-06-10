@@ -1,0 +1,135 @@
+parameters:
+  package_id:
+    description: |
+      The ID of the package. Specify multiple packages by specifying this argument multiple times:
+      --package-id 'MyCompany.MyApp' --package-id 'MyCompany.MyApp2'.
+    type: string
+  version:
+    description:
+    type: string
+  overwrite_mode:
+    description:
+    type: string
+    default: "FailIfExists"
+  space:
+    type: string
+    description: "[Optional] The name or ID of a space within which this command will be executed. The default space will be used if it is omitted."
+    default: ""
+  server:
+    type: env_var_name
+    description: |
+      [Optional] The name of the environment variable storing the base URL for your Octopus Server, e.g., 'https://octopus.example.com/'. This URL
+      can also be set in the OCTOPUS_CLI_SERVER environment variable.
+    default: "NOT_PROVIDED"
+  api_key:
+    type: env_var_name
+    description: |
+      [Optional] The name of the environment variable storing your API key. Get this from the user profile page.
+      You must provide an apiKey or username and password. If the guest account is enabled, a key of API-GUEST
+      can be used. This key can also be set in the OCTOPUS_CLI_API_KEY environment variable.
+    default: "NOT_PROVIDED"
+  user:
+    type: env_var_name
+    description: |
+      [Optional] The name of the environment variable storing the username to use when authenticating with the server. You must provide an apiKey or
+      username and password. This Username can also be set in the OCTOPUS_CLI_USERNAME environment
+      variable.
+    default: "NOT_PROVIDED"
+  pass:
+    type: env_var_name
+    description: |
+      [Optional] The name of the environment variable storing the password to use when authenticating with the server. This Password can also be set
+      in the OCTOPUS_CLI_PASSWORD environment variable.
+    default: "NOT_PROVIDED"
+  config_file:
+    type: string
+    description: "[Optional] Text file of default values, with one 'key = value' per line."
+    default: ""
+  debug:
+    type: boolean
+    description: "[Optional] Enable debug logging."
+    default: false
+  ignore_ssl_errors:
+    type: boolean
+    description: |
+      [Optional] Set this flag if your Octopus Server uses HTTPS but the certificate is not trusted on
+      this machine. Any certificate errors will be ignored. WARNING: this option may create a
+      security vulnerability.
+    default: false
+  timeout:
+    description: "[Optional] Timeout in seconds for network operations. Default is 600."
+    type: string
+    default: ""
+  proxy:
+    type: string
+    description: "[Optional] The URL of the proxy to use, e.g., 'https://proxy.example.com'."
+    default: ""
+  proxy_user:
+    description: "[Optional] The name of the environment variable storing the username for the proxy."
+    type: env_var_name
+    default: "NOT_PROVIDED"
+  proxy_pass:
+    description: |
+      [Optional] The name of the environment variable storing the password for the proxy. If both the username and password are omitted and
+      proxyAddress is specified, the default credentials are used.
+    type: env_var_name
+    default: "NOT_PROVIDED"
+  log_level:
+    description: |
+      [Optional] The log level. Valid options are verbose, debug, information, warning, error and fatal. Defaults to 'debug'.
+    type: string
+    default: ""
+steps:
+  - run:
+      name: "Push build information for << parameters.package_id >>"
+      command: |
+        get_string_value() {
+          if test "$2"; then
+            PARAMS+=("--$1=$2")
+          fi
+        }
+
+        get_switch_value() {
+          if test $2 = "true"; then
+            PARAMS+=("--$1")
+          fi
+        }
+
+        get_env_value() {
+          if test "$2" != "NOT_PROVIDED"; then
+            PARAMS+=("--$1=${!2}")
+          fi
+        }
+
+        cat >> << parameters.package_id >>.json \<<EOL
+        {
+          BuildEnvironment: "CircleCI",
+          BuildNumber: "$CIRCLE_BUILD_NUM",
+          BuildUrl: "$CIRCLE_BUILD_URL",
+          Branch: "$CIRCLE_BRANCH",
+          VcsType: "GitHub"
+        }
+        EOL
+
+        cat << parameters.package_id >>.json
+
+        PARAMS=("--file=<< parameters.package_id >>.json")
+
+        get_env_value server "<< parameters.server >>"
+        get_env_value apiKey "<< parameters.api_key >>"
+        get_string_value space "<< parameters.space >>"
+        get_string_value package-id "<< parameters.package_id >>"
+        get_string_value version "<< parameters.version >>"
+        get_string_value overwrite-mode "<< parameters.overwrite_mode >>"
+        get_env_value user "<< parameters.user >>"
+        get_env_value pass "<< parameters.pass >>"
+        get_string_value configFile "<< parameters.config_file >>"
+        get_string_value timeout "<< parameters.timeout >>"
+        get_string_value proxy "<< parameters.proxy >>"
+        get_env_value proxyUser "<< parameters.proxy_user >>"
+        get_env_value proxyPass "<< parameters.proxy_pass >>"
+        get_string_value logLevel "<< parameters.log_level >>"
+        get_switch_value ignoreSslErrors "<< parameters.ignore_ssl_errors >>"
+        get_switch_value debug "<< parameters.debug >>"
+
+        octo build-information "${PARAMS[@]}"

@@ -1,0 +1,16 @@
+description: Create an Octopus release.
+usage:
+  version: 2.1
+  orbs:
+    octo-exp: octopus-samples/octo-exp@0.0.3
+  jobs:
+    build:
+      executor:
+        name: octo-exp/default
+      steps:
+        - octo-exp/install-tools
+        - octo-exp/create-release:
+            project: "OctoPetShop"
+            release_number: "1.2.3"
+            server: "OCTOPUS_SERVER_URL"
+            api_key: "OCTOPUS_API_KEY"
