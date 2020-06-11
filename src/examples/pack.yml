@@ -2,15 +2,15 @@ description: Create an Octopus package.
 usage:
   version: 2.1
   orbs:
-    octo-exp: octopus-samples/octo-exp@0.0.3
+    octo: octopusdeploylabs/octopus-cli@0.0.2
   jobs:
     build:
       executor:
-        name: octo-exp/default
+        name: octo/default
       steps:
-        - octo-exp/install-tools
+        - octo/install-tools
         - checkout
-        - octo-exp/pack:
+        - octo/pack:
             id: "OctopusSamples.OctoPetShop.Database"
             version: "1.2.3"
             base_path: "publish/OctopusSamples.OctoPetShop.Database"

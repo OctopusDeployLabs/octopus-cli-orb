@@ -2,14 +2,14 @@ description: Create and upload build-information to Octopus.
 usage:
   version: 2.1
   orbs:
-    octo-exp: octopus-samples/octo-exp@0.0.3
+    octo: octopusdeploylabs/octopus-cli@0.0.2
   jobs:
     build:
       executor:
-        name: octo-exp/default
+        name: octo/default
       steps:
-        - octo-exp/install-tools
-        - octo-exp/build-information:
+        - octo/install-tools
+        - octo/build-information:
             package_id: "OctopusSamples.OctoPetShop.Database"
             version: "1.2.3"
             server: "OCTOPUS_SERVER_URL"
