@@ -83,8 +83,8 @@ workflows:
       - orb-tools/dev-promote-prod-from-commit-subject:
           orb-name: octopusdeploylabs/octopus-cli
 
-          add-pr-comment: true
-          fail-if-semver-not-indicated: true
+          add-pr-comment: false
+          fail-if-semver-not-indicated: false
           publish-version-tag: false
           requires:
             - integration-test-1
