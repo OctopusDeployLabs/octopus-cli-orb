@@ -2,14 +2,14 @@ description: Promote a release in one environment to another.
 usage:
   version: 2.1
   orbs:
-    octo-exp: octopus-samples/octo-exp@0.0.3
+    octo: octopusdeploylabs/octopus-cli@0.0.2
   jobs:
     build:
       executor:
-        name: octo-exp/default
+        name: octo/default
       steps:
-        - octo-exp/install-tools
-        - octo-exp/deploy-release:
+        - octo/install-tools
+        - octo/deploy-release:
             project: "OctoPetShop"
             from: "Development"
             to: "Test"

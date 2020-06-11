@@ -2,11 +2,11 @@ description: Install the Octo CLI on the container.
 usage:
   version: 2.1
   orbs:
-    octo-exp: octopus-samples/octo-exp@0.0.3
+    octo: octopusdeploylabs/octopus-cli@0.0.2
   jobs:
     build:
       executor:
-        name: octo-exp/default
+        name: octo/default
       steps:
-        - octo-exp/install-tools
+        - octo/install-tools
         - checkout
