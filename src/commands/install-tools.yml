@@ -14,9 +14,9 @@ steps:
           sudo add-apt-repository "deb https://apt.octopus.com/ stretch main"
           sudo apt update && sudo apt -y install octopuscli
         else
-          apt update && sudo apt -y install --no-install-recommends software-properties-common gnupg apt-transport-https
+          apt update && apt -y install --no-install-recommends software-properties-common gnupg apt-transport-https
           apt-key adv --fetch-keys https://apt.octopus.com/public.key
           add-apt-repository "deb https://apt.octopus.com/ stretch main"
-          apt update && sudo apt -y install octopuscli
+          apt update && apt -y install octopuscli
         fi
 
