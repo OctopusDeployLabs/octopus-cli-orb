@@ -7,7 +7,7 @@ steps:
   - run:
       name: Install Octo CLI
       command: |
-        if command -v sudo &> /dev/null
+        if [[ $(command -v sudo) ]]
         then
           sudo apt update && sudo apt -y install --no-install-recommends software-properties-common gnupg apt-transport-https
           sudo apt-key adv --fetch-keys https://apt.octopus.com/public.key
