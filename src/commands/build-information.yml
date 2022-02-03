@@ -79,6 +79,11 @@ parameters:
       [Optional] The log level. Valid options are verbose, debug, information, warning, error and fatal. Defaults to 'debug'.
     type: string
     default: ""
+  vcs_type:
+    description: |
+      [Optional] The type of VCS used. Defaults to 'GitHub'.
+    type: string
+    default: "GitHub"
 steps:
   - run:
       name: "Push build information for << parameters.package_id >>"
@@ -107,7 +112,9 @@ steps:
           BuildNumber: "$CIRCLE_BUILD_NUM",
           BuildUrl: "$CIRCLE_BUILD_URL",
           Branch: "$CIRCLE_BRANCH",
-          VcsType: "GitHub"
+          VcsType: "<< parameters.vcs_type >>",
+          VcsRoot: "$CIRCLE_REPOSITORY_URL",
+          VcsCommitNumber: "$CIRCLE_SHA1"
         }
         EOL
 
