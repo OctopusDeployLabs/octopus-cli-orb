@@ -1,8 +1,4 @@
 description: Install octo cli on current image.
-parameters:
-  version:
-    type: string
-    default: "6.17.0"
 steps:
   - run:
       name: Install Octo CLI
@@ -19,4 +15,3 @@ steps:
           add-apt-repository "deb https://apt.octopus.com/ stretch main"
           apt update && apt -y install octopuscli
         fi
-
