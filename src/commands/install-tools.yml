@@ -3,15 +3,19 @@ steps:
   - run:
       name: Install Octo CLI
       command: |
-        if [[ $(command -v sudo) ]]
-        then
-          sudo apt update && sudo apt -y install --no-install-recommends software-properties-common gnupg apt-transport-https
-          sudo apt-key adv --fetch-keys https://apt.octopus.com/public.key
-          sudo add-apt-repository "deb https://apt.octopus.com/ stretch main"
-          sudo apt update && sudo apt -y install octopuscli
-        else
-          apt update && apt -y install --no-install-recommends software-properties-common gnupg apt-transport-https
-          apt-key adv --fetch-keys https://apt.octopus.com/public.key
-          add-apt-repository "deb https://apt.octopus.com/ stretch main"
-          apt update && apt -y install octopuscli
-        fi
+        if [[ $EUID == 0 ]]; then export SUDO=""; else export SUDO="sudo"; fi
+
+        ID=$(grep -oP '(?<=^ID=).+' /etc/os-release | tr -d '"' | tr '[:upper:]' '[:lower:]')
+
+        case $ID in
+          ubuntu | debian)
+            $SUDO apt update && $SUDO apt -y install --no-install-recommends software-properties-common gnupg apt-transport-https
+            $SUDO apt-key adv --fetch-keys https://apt.octopus.com/public.key
+            $SUDO add-apt-repository "deb https://apt.octopus.com/ stretch main"
+            $SUDO apt update && $SUDO apt -y install octopuscli
+          centos | rhel | fedora)
+            $SUDO curl -sSfL https://rpm.octopus.com/octopuscli.repo -o /etc/yum.repos.d/octopuscli.repo
+            $SUDO yum install octopuscli -y
+          *)
+            echo "Unknown distribution: $ID";;
+        esac
